@@ -5,23 +5,23 @@ wxEND_EVENT_TABLE()
 
 SweeperWindow::SweeperWindow() : wxFrame(nullptr, wxID_ANY, "Main", wxPoint(200, 200), wxSize(400, 400))
 {
-	btn = new wxButton*[nFieldWidth * nFieldHeight];
-	wxGridSizer *grid = new wxGridSizer(nFieldWidth, nFieldHeight, 0, 0);
+	buttonArray = new wxButton*[mineFieldWidth * mineFieldHeight];
+	wxGridSizer *grid = new wxGridSizer(mineFieldWidth, mineFieldHeight, 0, 0);
 
-	nField = new int[nFieldWidth * nFieldHeight];
+	mineField = new int[mineFieldWidth * mineFieldHeight];
 
 	wxFont font(24, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD, false);
 
-	for (int x = 0; x < nFieldWidth; x++)
+	for (int x = 0; x < mineFieldWidth; x++)
 	{
-		for (int y = 0; y < nFieldHeight; y++)
+		for (int y = 0; y < mineFieldHeight; y++)
 		{
-			btn[y * nFieldWidth + x] = new wxButton(this, 10000 + (y * nFieldWidth + x));
-			btn[y * nFieldWidth + x]->SetFont(font);
-			grid->Add(btn[y * nFieldWidth + x], 1, wxEXPAND | wxALL);
+			buttonArray[y * mineFieldWidth + x] = new wxButton(this, 10000 + (y * mineFieldWidth + x));
+			buttonArray[y*mineFieldWidth+x]->SetFont(font);
+			grid->Add(buttonArray[y * mineFieldWidth + x], 1, wxEXPAND | wxALL);
 
-			btn[y * nFieldWidth + x]->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &SweeperWindow::OnButtonClicked, this);
-			nField[y * nFieldWidth + x] = 0;
+			buttonArray[y * mineFieldWidth + x]->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &SweeperWindow::OnButtonClicked, this);
+			mineField[y * mineFieldWidth + x] = 0;
 		}
 	}
 
@@ -31,13 +31,13 @@ SweeperWindow::SweeperWindow() : wxFrame(nullptr, wxID_ANY, "Main", wxPoint(200,
 
 SweeperWindow::~SweeperWindow()
 {
-	delete[]btn;
+	delete[]buttonArray;
 }
 
 void SweeperWindow::OnButtonClicked(wxCommandEvent &evt)
 {
-	int x = (evt.GetId() - 10000) % nFieldWidth;
-	int y = (evt.GetId() - 10000) / nFieldWidth;
+	int x = (evt.GetId() - 10000) % mineFieldWidth;
+	int y = (evt.GetId() - 10000) / mineFieldWidth;
 
 	if (bFirstClick)
 	{
@@ -45,12 +45,12 @@ void SweeperWindow::OnButtonClicked(wxCommandEvent &evt)
 
 		while (mines)
 		{
-			int rx = rand() % nFieldWidth;
-			int ry = rand() % nFieldHeight;
+			int rx = rand() % mineFieldWidth;
+			int ry = rand() % mineFieldHeight;
 
-			if (nField[ry * nFieldWidth + rx] == 0 && rx != x && ry != y)
+			if (mineField[ry * mineFieldWidth + rx] == 0 && rx != x && ry != y)
 			{
-				nField[ry * nFieldWidth + rx] = -1;
+				mineField[ry * mineFieldWidth + rx] = -1;
 				mines--;
 			}
 		}
@@ -58,33 +58,33 @@ void SweeperWindow::OnButtonClicked(wxCommandEvent &evt)
 		bFirstClick = false;
 	}
 
-	btn[y * nFieldWidth + x]->Enable(false);
+	buttonArray[y * mineFieldWidth + x]->Enable(false);
 
-	if (nField[y * nFieldWidth + x] == -1)
+	if (mineField[y * mineFieldWidth + x] == -1)
 	{
 		wxMessageBox("BOOOOM!! Game Over.");
 
 		bFirstClick = true;
-		for (int x = 0; x < nFieldWidth; x++)
+		for (int x = 0; x < mineFieldWidth; x++)
 		{
-			for (int y = 0; y < nFieldHeight; y++)
+			for (int y = 0; y < mineFieldHeight; y++)
 			{
-				nField[y * nFieldWidth + x] = 0;
-				btn[y * nFieldWidth + x]->SetLabel(""); //number of mines around clicked location
-				btn[y * nFieldWidth + x]->Enable(true);
+				mineField[y * mineFieldWidth + x] = 0;
+				buttonArray[y * mineFieldWidth + x]->SetLabel(""); //number of mines around clicked location
+				buttonArray[y * mineFieldWidth + x]->Enable(true);
 			}
 		}
 	}
 	else
-	{	//count mines
+	{	//count mines around clicked square
 		int mineCount = 0;
 		for (int i = -1; i < 2; i++)
 		{
 			for (int j = -1; j < 2; j++)
 			{
-				if (x + i >= 0 && x + i < nFieldWidth && y + j >= 0 && y + j < nFieldHeight)
+				if (x + i >= 0 && x + i < mineFieldWidth && y + j >= 0 && y + j < mineFieldHeight)
 				{
-					if (nField[(y + j) * nFieldWidth + (x + i)] == -1)
+					if (mineField[(y + j) * mineFieldWidth + (x + i)] == -1)
 					{
 						mineCount++;
 					}
@@ -94,7 +94,7 @@ void SweeperWindow::OnButtonClicked(wxCommandEvent &evt)
 
 		if (mineCount > 0)
 		{
-			btn[y * nFieldWidth + x]->SetLabel(std::to_string(mineCount));
+			buttonArray[y * mineFieldWidth + x]->SetLabel(std::to_string(mineCount));
 		}
 	}
 

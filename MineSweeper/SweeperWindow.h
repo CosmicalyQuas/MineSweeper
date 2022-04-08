@@ -3,15 +3,11 @@
 
 class SweeperWindow : public wxFrame
 {
-private:
-	wxButton* button = nullptr;
-	wxButton* buttonMe = nullptr;
-	wxTextCtrl* text = nullptr;
 public:
-	int nFieldWidth = 10;
-	int nFieldHeight = 10;
-	wxButton** btn;
-	int* nField = nullptr;
+	int mineFieldWidth = 10;
+	int mineFieldHeight = 10;
+	wxButton** buttonArray;
+	int* mineField = nullptr;
 	bool bFirstClick = true; //populate minefield after they have clicked one mine
 
 	SweeperWindow();
