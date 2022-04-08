@@ -72,6 +72,7 @@ void SweeperWindow::OnButtonClicked(wxCommandEvent &evt)
 				mineField[y * mineFieldWidth + x] = 0;
 				buttonArray[y * mineFieldWidth + x]->SetLabel(""); //number of mines around clicked location
 				buttonArray[y * mineFieldWidth + x]->Enable(true);
+				buttonArray[y * mineFieldWidth + x]->SetBackgroundColour(wxNullColour);
 			}
 		}
 	}
@@ -95,6 +96,15 @@ void SweeperWindow::OnButtonClicked(wxCommandEvent &evt)
 		if (mineCount > 0)
 		{
 			buttonArray[y * mineFieldWidth + x]->SetLabel(std::to_string(mineCount));
+		}
+
+		if (mineCount == 2)
+		{
+			buttonArray[y * mineFieldWidth + x]->SetBackgroundColour(*wxYELLOW);
+		}
+		else if (mineCount >= 3)
+		{
+			buttonArray[y * mineFieldWidth + x]->SetBackgroundColour(*wxRED);
 		}
 	}
 
